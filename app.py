@@ -91,7 +91,7 @@ def bias_correct(col_name:str,issue_num:int)->None:
     st.plotly_chart(fig)
 
 # Display the plot if data is loaded
-
+st.set_page_config(layout="wide")
 if not data.empty:
     st.title("BoK's Inflation Forecast: Visualization")
 
