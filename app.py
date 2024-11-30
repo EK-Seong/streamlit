@@ -65,6 +65,6 @@ if not data.empty:
     st.write("### CPI Inflation Rate Plot")
     create_plot(1999,2026,'CPI Inflation Rates and Forecasts')
     st.write('### Bias Corrected Forecasts (Lee and Seong, 2024)')
-    create_plot(2021,2026,'Bias Corrected Forecasts (Lee and Seong, 2024)')
+    create_plot(2021,2026,'Last Update:')
 else:
     st.write('Please upload your csv file with appropriate structure.')
