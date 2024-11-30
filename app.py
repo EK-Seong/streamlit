@@ -4,6 +4,8 @@ import plotly.graph_objects as go
 import streamlit as st
 import ar1
 
+st.set_page_config(layout="wide")
+
 # Streamlit File Uploader
 uploaded_file = st.file_uploader("Upload your CSV", type=["csv"])
 if uploaded_file is not None:
@@ -91,7 +93,6 @@ def bias_correct(col_name:str,issue_num:int)->None:
     st.plotly_chart(fig)
 
 # Display the plot if data is loaded
-st.set_page_config(layout="wide")
 if not data.empty:
     st.title("BoK's Inflation Forecast: Visualization")
 
