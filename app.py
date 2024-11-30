@@ -111,7 +111,6 @@ if not data.empty:
         block3 = file.read()
 
     st.markdown(block3,unsafe_allow_html=True)
-
     bias_correct('202408',1)
     bias_correct('202411',2)
     st.write('Last Update: Dec 2024')
