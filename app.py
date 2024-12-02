@@ -95,6 +95,7 @@ def bias_correct(col_name:str,issue_num:int)->None:
 # Display the plot if data is loaded
 if not data.empty:
     st.title("BoK's Inflation Forecast: Visualization")
+    st.markdown('[Seojeong Lee](https://sites.google.com/site/misspecifiedjay), [Eunkyu Seong](https://ek-seong.github.io/ekseong/)')
 
     with open('block1.md','r') as file:
         block1 = file.read()
