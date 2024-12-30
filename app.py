@@ -80,7 +80,7 @@ def bias_correct(col_name:str,issue_num:int)->None:
         for i in range(0,2):
             bc[non_nan_indices[i]] +=ehats[2*i+1]
 
-    fig.add_trace(go.Scatter(x=t, y=bc, name='Corrected', mode='lines+markers', line=dict(color='black', dash='dash'), marker=dict(symbol='triangle-up')))
+    fig.add_trace(go.Scatter(x=t, y=bc, name='Corrected', mode='markers', marker=dict(symbol='triangle-up')))
     # Customize layout
     fig.update_layout(
         title = 'AR(1) Bias Correction Strategy',
@@ -94,7 +94,7 @@ def bias_correct(col_name:str,issue_num:int)->None:
 
 # Display the plot if data is loaded
 if not data.empty:
-    st.title("BoK's Inflation Forecast: Visualization")
+    st.title("The Real-time Inflation Forecast and Bias Correction")
     st.markdown('[Seojeong Lee](https://sites.google.com/site/misspecifiedjay), [Eunkyu Seong](https://ek-seong.github.io/ekseong/)')
 
     with open('block1.md','r') as file:
@@ -113,7 +113,7 @@ if not data.empty:
         block3 = file.read()
 
     st.markdown(block3,unsafe_allow_html=True)
-    bias_correct('202408',1)
+    #bias_correct('202408',1)
     bias_correct('202411',2)
     st.write('Last Update: Dec 2024')
 
