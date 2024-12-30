@@ -87,7 +87,7 @@ def bias_correct(col_name: str, issue_num: int):
     """
     Apply AR(1) bias correction to a selected column and visualize the results.
     """
-    st.subheader("Select Forecast Columns for Bias Correction")
+    st.subheader("Select the corresponding Economic Outlook issue for Bias Correction")
 
     # Display checkboxes for the most recent 6 series
     recent_columns = dynamic_columns[-6:] if len(dynamic_columns) >= 6 else dynamic_columns
