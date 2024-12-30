@@ -156,13 +156,6 @@ if not data.empty:
     st.title("The Real-time Inflation Forecast and Bias Correction")
     st.markdown('[Seojeong Lee](https://sites.google.com/site/misspecifiedjay), [Eunkyu Seong](https://ek-seong.github.io/ekseong/)')
 
-    with open('block1.md', 'r') as file:
-        block1 = file.read()
-    st.markdown(block1, unsafe_allow_html=True)
-
-    # Create the main figure
-    create_plot(1999, 2026)
-
     with open('block2.md', 'r') as file:
         block2 = file.read()
     st.markdown(block2, unsafe_allow_html=True)
@@ -175,6 +168,16 @@ if not data.empty:
     bias_correct('202411', 2)
 
     st.write('Last Update: Dec 2024')
+
+
+
+    with open('block1.md', 'r') as file:
+        block1 = file.read()
+    st.markdown(block1, unsafe_allow_html=True)
+
+    create_plot(1999, 2026)
+
+
 
 else:
     st.write('Please upload your CSV file with the appropriate structure.')
