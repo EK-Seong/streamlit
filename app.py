@@ -64,6 +64,13 @@ def create_plot(start: float, end: float):
         name='Realized'
     ))
 
+    # Add dynamic columns with MATLAB-like styles
+    for i, col in enumerate(dynamic_columns):
+        color, linestyle, marker, group, groupname = dynamic_styles[i]
+        if data[col].notnull().any():
+            fig.add_trace(go.Scatter(x=t, y=data[col], legendgroup=group, name=groupname, mode='lines+markers', line=dict(color=color, dash=linestyle), marker=dict(symbol=marker)))
+
+
     # Customize layout
     fig.update_layout(
         title='CPI Inflation Rates and Forecasts',
