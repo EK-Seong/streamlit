@@ -80,7 +80,7 @@ def bias_correct(col_name:str,issue_num:int)->None:
         for i in range(0,2):
             bc[non_nan_indices[i]] +=ehats[2*i+1]
 
-    fig.add_trace(go.Scatter(x=t, y=bc, name='Corrected', mode='markers', marker=dict(symbol='triangle-up')))
+    fig.add_trace(go.Scatter(x=t, y=bc, name='Corrected', mode='markers', marker=dict(color = 'red',symbol='triangle-up')))
     # Customize layout
     fig.update_layout(
         title = 'AR(1) Bias Correction Strategy',
