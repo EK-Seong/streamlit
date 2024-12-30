@@ -136,7 +136,7 @@ def bias_correct(col_name: str, issue_num: int):
             y=bc,
             name='Corrected',
             mode='markers',
-            marker=dict(color='red', symbol='triangle-up')
+            marker=dict(color='green', symbol='triangle-up')
         ))
 
         # Customize layout
