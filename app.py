@@ -81,10 +81,14 @@ def bias_correct(col_name: str, issue_num: int):
     Apply AR(1) bias correction to a selected column and visualize the results.
     """
     st.subheader("Select Forecast Columns for Bias Correction")
+
+    # Display checkboxes for the most recent 6 series
+    recent_columns = dynamic_columns[-6:] if len(dynamic_columns) >= 6 else dynamic_columns
     columns_to_show = []
-    for col in dynamic_columns:
-        # Add a checkbox for each dynamic column
-        if st.checkbox(f"Apply Bias Correction to {col}", value=False):
+
+    cols = st.columns(len(recent_columns))
+    for i, col in enumerate(recent_columns):
+        if cols[i].checkbox(f"{col}", value=False):
             columns_to_show.append(col)
 
     for col_name in columns_to_show:
@@ -160,7 +164,7 @@ if not data.empty:
         block3 = file.read()
     st.markdown(block3, unsafe_allow_html=True)
 
-    # Bias correction with checkboxes for selection
+    # Bias correction with checkboxes for recent 6 series
     bias_correct('202411', 2)
 
     st.write('Last Update: Dec 2024')
