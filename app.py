@@ -172,7 +172,7 @@ if not data.empty:
     st.markdown(block3, unsafe_allow_html=True)
 
     # Bias correction with checkboxes for recent 6 series
-    bias_correct('202411', 2)
+    bias_correct()
 
     st.write('Last Update: Dec 2024')
 
