@@ -64,13 +64,6 @@ def create_plot(start: float, end: float):
         name='Realized'
     ))
 
-    # Add dynamic columns with MATLAB-like styles
-    for i, col in enumerate(dynamic_columns):
-        color, linestyle, marker, group, groupname = dynamic_styles[i]
-        if data[col].notnull().any():
-            fig.add_trace(go.Scatter(x=t, y=data[col], legendgroup=group, name=groupname, mode='lines+markers', line=dict(color=color, dash=linestyle), marker=dict(symbol=marker)))
-
-
     # Customize layout
     fig.update_layout(
         title='CPI Inflation Rates and Forecasts',
@@ -83,11 +76,11 @@ def create_plot(start: float, end: float):
     # Show the plot in Streamlit
     st.plotly_chart(fig)
 
-def bias_correct(col_name: str, issue_num: int):
+def bias_correct():
     """
-    Apply AR(1) bias correction to a selected column and visualize the results.
+    Combine all selected forecasts and their bias corrections into one graph.
     """
-    st.subheader("Select the corresponding Economic Outlook issue for Bias Correction")
+    st.subheader("Select Forecast Columns for Bias Correction")
 
     # Display checkboxes for the most recent 6 series
     recent_columns = dynamic_columns[-6:] if len(dynamic_columns) >= 6 else dynamic_columns
@@ -98,11 +91,10 @@ def bias_correct(col_name: str, issue_num: int):
         if cols[i].checkbox(f"{col}", value=False):
             columns_to_show.append(col)
 
-    for col_name in columns_to_show:
-        bok = data[col_name]
+    if columns_to_show:
         fig = go.Figure()
 
-        # Original series
+        # Add the realized series
         fig.add_trace(go.Scatter(
             x=t,
             y=realized,
@@ -110,38 +102,47 @@ def bias_correct(col_name: str, issue_num: int):
             marker=dict(color='red', symbol='circle'),
             name='Realized'
         ))
-        fig.add_trace(go.Scatter(
-            x=t,
-            y=bok,
-            name='BoK ' + col_name,
-            mode='lines+markers',
-            line=dict(color='blue', dash='dot'),
-            marker=dict(symbol='x')
-        ))
 
-        ehats = ar1.compute_ehats('infl.csv')
-        non_nan_indices = bok[bok.notnull()].index.tolist()
+        # Add each selected column and its bias correction
+        for col_name in columns_to_show:
+            bok = data[col_name]
 
-        if issue_num == 2:
-            bc = data[col_name].copy()
-            for i in range(0, 3):
-                bc[non_nan_indices[i]] += ehats[2 * i]
-        else:
-            bc = data[col_name].copy()
-            for i in range(0, 2):
-                bc[non_nan_indices[i]] += ehats[2 * i + 1]
+            # Add the original forecast series
+            fig.add_trace(go.Scatter(
+                x=t,
+                y=bok,
+                name=f'Forecast: {col_name}',
+                mode='lines+markers',
+                line=dict(color='blue', dash='dot'),
+                marker=dict(symbol='x')
+            ))
 
-        fig.add_trace(go.Scatter(
-            x=t,
-            y=bc,
-            name='Corrected',
-            mode='markers',
-            marker=dict(color='green', symbol='triangle-up')
-        ))
+            # Compute bias correction
+            ehats = ar1.compute_ehats('infl.csv')
+            non_nan_indices = bok[bok.notnull()].index.tolist()
+            issue_num = 2  # Example value; you can adjust as needed
+
+            if issue_num == 2:
+                bc = data[col_name].copy()
+                for i in range(0, 3):
+                    bc[non_nan_indices[i]] += ehats[2 * i]
+            else:
+                bc = data[col_name].copy()
+                for i in range(0, 2):
+                    bc[non_nan_indices[i]] += ehats[2 * i + 1]
+
+            # Add the bias-corrected series
+            fig.add_trace(go.Scatter(
+                x=t,
+                y=bc,
+                name=f'Corrected: {col_name}',
+                mode='markers',
+                marker=dict(color='green', symbol='triangle-up')
+            ))
 
         # Customize layout
         fig.update_layout(
-            title=f'AR(1) Bias Correction Strategy for {col_name}',
+            title='Forecasts and Bias Corrections Combined',
             xaxis=dict(title='Time', tickvals=np.arange(1999, 2027)),
             yaxis=dict(title='Inflation Rate', showticksuffix='none'),
             showlegend=True
@@ -156,6 +157,13 @@ if not data.empty:
     st.title("The Real-time Inflation Forecast and Bias Correction")
     st.markdown('[Seojeong Lee](https://sites.google.com/site/misspecifiedjay), [Eunkyu Seong](https://ek-seong.github.io/ekseong/)')
 
+    with open('block1.md', 'r') as file:
+        block1 = file.read()
+    st.markdown(block1, unsafe_allow_html=True)
+
+    # Create the main figure
+    create_plot(1999, 2026)
+
     with open('block2.md', 'r') as file:
         block2 = file.read()
     st.markdown(block2, unsafe_allow_html=True)
@@ -164,20 +172,10 @@ if not data.empty:
         block3 = file.read()
     st.markdown(block3, unsafe_allow_html=True)
 
-    # Bias correction with checkboxes for recent 6 series
-    bias_correct('202411', 2)
+    # Bias correction with checkboxes for recent 6 series combined in one graph
+    bias_correct()
 
     st.write('Last Update: Dec 2024')
-
-
-
-    with open('block1.md', 'r') as file:
-        block1 = file.read()
-    st.markdown(block1, unsafe_allow_html=True)
-
-    create_plot(1999, 2026)
-
-
 
 else:
     st.write('Please upload your CSV file with the appropriate structure.')
