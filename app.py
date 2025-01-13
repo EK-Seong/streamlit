@@ -64,6 +64,12 @@ def create_plot(start: float, end: float):
         name='Realized'
     ))
 
+    # Add dynamic columns with MATLAB-like styles
+    for i, col in enumerate(dynamic_columns):
+        color, linestyle, marker, group, groupname = dynamic_styles[i]
+        if data[col].notnull().any():
+            fig.add_trace(go.Scatter(x=t, y=data[col], legendgroup=group, name=groupname, mode='lines+markers', line=dict(color=color, dash=linestyle), marker=dict(symbol=marker)))
+
     # Customize layout
     fig.update_layout(
         title='CPI Inflation Rates and Forecasts',
@@ -157,13 +163,6 @@ if not data.empty:
     st.title("The Real-time Inflation Forecast and Bias Correction")
     st.markdown('[Seojeong Lee](https://sites.google.com/site/misspecifiedjay), [Eunkyu Seong](https://ek-seong.github.io/ekseong/)')
 
-    with open('block1.md', 'r') as file:
-        block1 = file.read()
-    st.markdown(block1, unsafe_allow_html=True)
-
-    # Create the main figure
-    create_plot(1999, 2026)
-
     with open('block2.md', 'r') as file:
         block2 = file.read()
     st.markdown(block2, unsafe_allow_html=True)
@@ -172,10 +171,20 @@ if not data.empty:
         block3 = file.read()
     st.markdown(block3, unsafe_allow_html=True)
 
-    # Bias correction with checkboxes for recent 6 series combined in one graph
-    bias_correct()
+    # Bias correction with checkboxes for recent 6 series
+    bias_correct('202411', 2)
 
     st.write('Last Update: Dec 2024')
+
+
+
+    with open('block1.md', 'r') as file:
+        block1 = file.read()
+    st.markdown(block1, unsafe_allow_html=True)
+
+    create_plot(1999, 2026)
+
+
 
 else:
     st.write('Please upload your CSV file with the appropriate structure.')
