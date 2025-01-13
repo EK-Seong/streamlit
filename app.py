@@ -161,7 +161,7 @@ def bias_correct():
 # Display the plot if data is loaded
 if not data.empty:
     st.title("The Real-time Inflation Forecast and Bias Correction")
-    st.markdown('[Seojeong Lee](https://sites.google.com/site/misspecifiedjay), [Eunkyu Seong](https://ek-seong.github.io/ekseong/)')
+    st.markdown('[Seojeong Lee](https://sites.google.com/site/misspecifiedjay), [Eunkyu Seong](https://ek-seong.github.io/)')
 
     with open('block2.md', 'r') as file:
         block2 = file.read()
