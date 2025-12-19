@@ -1,19 +1,45 @@
+import json
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+
 import ar1
 
 st.set_page_config(layout="wide")
 
+PROCESSED_DIR = Path("data/processed")
+PROCESSED_CPI_PATH = PROCESSED_DIR / "cpi_inflation.csv"
+PROCESSED_INFL_PATH = PROCESSED_DIR / "infl.csv"
+METADATA_PATH = PROCESSED_DIR / "metadata.json"
+
+
+def resolve_path(primary: Path, fallback: Path) -> Path:
+    return primary if primary.exists() else fallback
+
+
+def load_inflation_dataframe(uploaded_file):
+    if uploaded_file is not None:
+        return pd.read_csv(uploaded_file)
+    fallback = resolve_path(PROCESSED_CPI_PATH, Path("cpi_inflation.csv"))
+    return pd.read_csv(fallback)
+
+
+def load_metadata():
+    if not METADATA_PATH.exists():
+        return None
+    try:
+        return json.loads(METADATA_PATH.read_text())
+    except json.JSONDecodeError:
+        return None
+
+
 # Streamlit File Uploader
 uploaded_file = st.file_uploader("Upload your CSV", type=["csv"])
-if uploaded_file is not None:
-    data = pd.read_csv(uploaded_file)
-else:
-    # Fallback to local CSV file if none is uploaded
-    csv_file_path = 'cpi_inflation.csv'  # Replace with your local path
-    data = pd.read_csv(csv_file_path)
+data = load_inflation_dataframe(uploaded_file)
+infl_path = resolve_path(PROCESSED_INFL_PATH, Path("infl.csv"))
 
 # Extract key columns
 t = data['t']
@@ -124,7 +150,7 @@ def bias_correct():
             ))
 
             # Compute bias correction
-            ehats = ar1.compute_ehats('infl.csv')
+            ehats = ar1.compute_ehats(str(infl_path))
             non_nan_indices = bok[bok.notnull()].index.tolist()
             issue_num = 2  # Example value; you can adjust as needed
 
@@ -174,7 +200,14 @@ if not data.empty:
     # Bias correction with checkboxes for recent 6 series
     bias_correct()
 
-    st.write('Last Update: Dec 2024')
+    metadata = load_metadata()
+    if metadata:
+        last_update = metadata.get("downloaded_at", "Unknown")
+        source_url = metadata.get("source_url")
+        source_text = f" | Source: {source_url}" if source_url else ""
+        st.write(f"Last Update: {last_update}{source_text}")
+    else:
+        st.write('Last Update: Dec 2024')
 
 
 
