@@ -9,10 +9,10 @@ Sandbox for streamlit study
 - 인덱스 페이지 URL(발표 자료가 연결된 페이지) 또는 로컬로 받은 엑셀/CSV 파일
 
 ### 사용법
-1. **크롤링 + 다운로드 + 정규화**
+1. **크롤링 + 다운로드 + 정규화** (한국은행 공개 페이지 직접 사용)
    ```bash
    python data_pipeline.py \
-     --index-url "https://example.bok.or.kr/..." \
+     --index-url "https://www.bok.or.kr/portal/singl/newsData/list.do?pageIndex=&targetDepth=3&menuNo=200066&syncMenuChekKey=1&depthSubMain=&subMainAt=&searchCnd=1&searchKwd=&depth2=200699&depth3=200066&date=&sdate=&edate=&sort=1&pageUnit=10" \
      --keyword "경제전망" \
      --time-column t \
      --forecast-column forecast \
@@ -27,6 +27,7 @@ Sandbox for streamlit study
    python data_pipeline.py --local-file path/to/release.xlsx --forecast-column 202501
    ```
    - 크롤링 없이 지정 파일을 사용해 동일한 산출물을 만듭니다.
+   - 만약 인덱스 페이지의 첨부가 PDF/HWP 등 비정형일 경우, 필요한 표를 직접 CSV/Excel로 변환한 뒤 이 옵션으로 공급하세요.
 
 3. **Streamlit 앱 반영**
    - 앱은 `data/processed/*.csv`가 있으면 자동으로 사용하고, 없으면 루트의 기본 CSV로 fallback 합니다.

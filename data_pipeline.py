@@ -43,9 +43,16 @@ def _score_url(url: str) -> tuple[int, str]:
     return (int(numeric_token[:4]) if numeric_token else 0, numeric_token, url)
 
 
+DEFAULT_INDEX_URL = (
+    "https://www.bok.or.kr/portal/singl/newsData/list.do?"
+    "pageIndex=&targetDepth=3&menuNo=200066&syncMenuChekKey=1&depthSubMain=&subMainAt="
+    "&searchCnd=1&searchKwd=&depth2=200699&depth3=200066&date=&sdate=&edate=&sort=1&pageUnit=10"
+)
+
+
 @dataclass
 class PipelineConfig:
-    index_url: Optional[str] = None
+    index_url: Optional[str] = DEFAULT_INDEX_URL
     keyword: str = "경제전망"
     raw_dir: Path = Path("data/raw")
     output_dir: Path = Path("data/processed")
@@ -81,7 +88,7 @@ class OutlookPipeline:
             lower_href = href.lower()
             if not lower_href.endswith(self.config.extensions):
                 continue
-            if self.config.keyword not in href:
+            if self.config.keyword.lower() not in lower_href:
                 continue
             candidates.append(urljoin(self.config.index_url, href))
 
